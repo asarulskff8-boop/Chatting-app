@@ -9,4 +9,6 @@
     <string name="forgot_prompt">Forgot?</string>
     <string name="create_account">Create account</string>
     <string name="account_ready_title">Your Account Is Ready!</string>
+    <string name="app_download_url">https://github.com/asarulskff8-boop/Chatting-app/releases/download/latest-apk/ChattingApp.apk</string>
+    <string name="app_releases_url">https://github.com/asarulskff8-boop/Chatting-app/releases</string>
 </resources>

@@ -54,6 +54,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteForever
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Lock
@@ -98,6 +99,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.example.R
 import com.example.data.model.BlockedUser
 import com.example.data.model.FriendRequest
 import com.example.data.model.MediaFile
@@ -139,6 +141,8 @@ fun ProfileTab(
     onShowMessage: (String) -> Unit
 ) {
     val context = LocalContext.current
+    val apkDownloadUrl = remember { context.getString(R.string.app_download_url) }
+    val apkReleasesUrl = remember { context.getString(R.string.app_releases_url) }
     val qrLink = remember(myProfile.userId) { QrCodeUtils.buildUserProfileLink(myProfile.userId) }
     val qrBitmap = remember(qrLink) { QrCodeUtils.generateQrBitmap(qrLink, 420) }
 
@@ -323,6 +327,26 @@ fun ProfileTab(
                     SheetActionRow(Icons.Rounded.Language, "Language (${userPrefs.languageCode})") { showLanguageSheet = true }
                     SheetActionRow(Icons.Rounded.Block, "Blocked Contacts (${blockedUsers.size})") { showBlockedSheet = true }
                     SheetActionRow(Icons.Rounded.Storage, "Storage & Cache Management") { showStorageSheet = true }
+                    SheetActionRow(Icons.Rounded.Download, "Download Latest APK") {
+                        runCatching {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(apkDownloadUrl)))
+                        }.onFailure {
+                            runCatching {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(apkReleasesUrl)))
+                            }.onFailure {
+                                onShowMessage("Open Releases in browser: $apkReleasesUrl")
+                            }
+                        }
+                    }
+                    SheetActionRow(Icons.Rounded.Share, "Share App Download Link") {
+                        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        cm.setPrimaryClip(ClipData.newPlainText("Chatting App APK", apkDownloadUrl))
+                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_TEXT, "Download Chatting App (Android APK): $apkDownloadUrl")
+                            type = "text/plain"
+                        }
+                        context.startActivity(Intent.createChooser(sendIntent, "Share Chatting App APK"))
+                    }
                     SheetActionRow(Icons.AutoMirrored.Rounded.Help, "Help & Support") { showHelpSheet = true }
                     SheetActionRow(Icons.AutoMirrored.Rounded.Logout, "Log Out", tint = MaterialTheme.colorScheme.primary) { onLogout() }
                     SheetActionRow(Icons.Rounded.DeleteForever, "Delete Account", tint = MaterialTheme.colorScheme.error) { showDeleteConfirm = true }
@@ -474,7 +498,7 @@ fun ProfileTab(
         AlertDialog(
             onDismissRequest = { showHelpSheet = false },
             title = { Text("Help & Support") },
-            text = { Text("Chatting App v1.0\nConnect Beyond Messages.\n\n• Real-time Firestore messaging & media sync\n• Google Sign-In via Android Credential Manager\n• QR Code friend discovery & CameraX video calling") },
+            text = { Text("Chatting App v1.0\nConnect Beyond Messages.\n\n• Real-time Firestore messaging & media sync\n• Google Sign-In via Android Credential Manager\n• QR Code friend discovery & CameraX video calling\n\nOfficial APK Releases:\n$apkReleasesUrl") },
             confirmButton = { TextButton(onClick = { showHelpSheet = false }) { Text("OK") } }
         )
     }

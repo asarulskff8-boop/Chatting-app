@@ -111,6 +111,7 @@ import com.example.ui.components.SectionHeader
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyPrimary
 import com.example.ui.theme.ThemeMode
@@ -182,7 +183,7 @@ fun ProfileTab(
             Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = LightSurface),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                border = BorderStroke(1.2.dp, LightOutline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -254,7 +255,7 @@ fun ProfileTab(
             Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = LightSurface),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                border = BorderStroke(1.2.dp, LightOutline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -335,17 +336,17 @@ fun ProfileTab(
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = LightSurface),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                border = BorderStroke(1.2.dp, LightOutline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     SheetActionRow(Icons.Rounded.Security, "Privacy, Security & Notifications") { showPrivacySheet = true }
-                    SheetActionRow(Icons.Rounded.LightMode, "Appearance (Medium Light Mode)") {
+                    SheetActionRow(Icons.Rounded.LightMode, "Appearance (Cool Slate Light)") {
                         onSetThemeMode(ThemeMode.LIGHT)
-                        onShowMessage("Medium Light Mode is active across the entire app")
+                        onShowMessage("Cool Slate Light & Royal Blue theme is active")
                     }
-                    SheetActionRow(Icons.Rounded.Wallpaper, "Chat Style (Medium Minimal)") { showWallpaperSheet = true }
+                    SheetActionRow(Icons.Rounded.Wallpaper, "Chat Style (Cool Slate)") { showWallpaperSheet = true }
                     SheetActionRow(Icons.Rounded.Language, "Language (${userPrefs.languageCode})") { showLanguageSheet = true }
                     SheetActionRow(Icons.Rounded.Block, "Blocked Contacts (${blockedUsers.size})") { showBlockedSheet = true }
                     SheetActionRow(Icons.Rounded.Storage, "Storage & Cache Management") { showStorageSheet = true }
@@ -464,8 +465,8 @@ fun ProfileTab(
     if (showWallpaperSheet) {
         ModalBottomSheet(onDismissRequest = { showWallpaperSheet = false }) {
             Column(modifier = Modifier.padding(20.dp)) {
-                Text("Medium Light Chat Theme Style", style = MaterialTheme.typography.titleLarge)
-                listOf("Medium White Minimal", "Sky Breeze Light", "Soft Ice Tint").forEachIndexed { idx, label ->
+                Text("Cool Slate Chat Theme Style", style = MaterialTheme.typography.titleLarge)
+                listOf("Cool Slate Minimal", "Royal Breeze Mist", "Soft Ice Slate").forEachIndexed { idx, label ->
                     SheetActionRow(Icons.Rounded.Wallpaper, label) {
                         onSetWallpaperIndex(idx)
                         showWallpaperSheet = false

@@ -78,14 +78,18 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.fragment.app.FragmentActivity
 import com.example.data.firebase.AuthManager
+import com.example.ui.components.AppleBrandLogo
 import com.example.ui.components.ChatSparkEmblem
+import com.example.ui.components.GoogleBrandLogo
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.theme.InputFocusedSurface
+import com.example.ui.theme.InputRestSurface
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyBright
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
-import com.example.ui.theme.SkySoft
 import com.example.util.BiometricHelper
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -219,15 +223,15 @@ fun AuthScreen(
                 }
             }
 
-            // Medium-white elevated sheet with crisp cool border
+            // Soft Cool Slate elevated sheet with crisp border
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
                 color = LightSurface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                shadowElevation = 6.dp
+                border = BorderStroke(1.2.dp, LightOutline),
+                shadowElevation = 8.dp
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -245,7 +249,7 @@ fun AuthScreen(
                         Text(
                             text = "Email",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         OutlinedTextField(
@@ -257,9 +261,11 @@ fun AuthScreen(
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = SkyPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color(0xFFEDF2F7),
+                                unfocusedBorderColor = LightOutline,
+                                focusedContainerColor = InputFocusedSurface,
+                                unfocusedContainerColor = InputRestSurface,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
@@ -274,7 +280,7 @@ fun AuthScreen(
                         Text(
                             text = "Password",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         OutlinedTextField(
@@ -295,9 +301,11 @@ fun AuthScreen(
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = SkyPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color(0xFFEDF2F7),
+                                unfocusedBorderColor = LightOutline,
+                                focusedContainerColor = InputFocusedSurface,
+                                unfocusedContainerColor = InputRestSurface,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
@@ -373,14 +381,14 @@ fun AuthScreen(
 
                         Spacer(modifier = Modifier.height(14.dp))
 
-                        // Google | Apple | Biometric quick auth buttons
+                        // Google | Apple | Biometric quick auth buttons with authentic vector logos
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             QuickAuthPill(
                                 label = "Google",
-                                dotColor = Color(0xFFF97316),
+                                provider = QuickAuthProvider.GOOGLE,
                                 onClick = { launchRealGoogleSignIn() },
                                 modifier = Modifier
                                     .weight(1f)
@@ -388,7 +396,7 @@ fun AuthScreen(
                             )
                             QuickAuthPill(
                                 label = "Apple",
-                                dotColor = MaterialTheme.colorScheme.onSurface,
+                                provider = QuickAuthProvider.APPLE,
                                 onClick = { showAppleInfoSheet = true },
                                 modifier = Modifier
                                     .weight(1f)
@@ -396,7 +404,7 @@ fun AuthScreen(
                             )
                             QuickAuthPill(
                                 label = "Biometric",
-                                dotColor = SkyPrimary,
+                                provider = QuickAuthProvider.BIOMETRIC,
                                 onClick = {
                                     val activity = context as? FragmentActivity
                                     if (activity == null) {
@@ -667,18 +675,25 @@ private fun SlideToSignInButton(
     }
 }
 
+private enum class QuickAuthProvider {
+    GOOGLE,
+    APPLE,
+    BIOMETRIC
+}
+
 @Composable
 private fun QuickAuthPill(
     label: String,
-    dotColor: Color,
+    provider: QuickAuthProvider,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        color = InputRestSurface,
+        border = BorderStroke(1.2.dp, LightOutline),
+        shadowElevation = 1.dp,
         modifier = modifier.height(50.dp)
     ) {
         Row(
@@ -686,19 +701,17 @@ private fun QuickAuthPill(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (label == "Biometric") {
-                Icon(
+            when (provider) {
+                QuickAuthProvider.GOOGLE -> GoogleBrandLogo(modifier = Modifier.size(18.dp))
+                QuickAuthProvider.APPLE -> AppleBrandLogo(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(18.dp)
+                )
+                QuickAuthProvider.BIOMETRIC -> Icon(
                     imageVector = Icons.Rounded.Fingerprint,
                     contentDescription = null,
-                    tint = dotColor,
-                    modifier = Modifier.size(16.dp)
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(dotColor)
+                    tint = SkyPrimary,
+                    modifier = Modifier.size(19.dp)
                 )
             }
             Spacer(modifier = Modifier.width(6.dp))

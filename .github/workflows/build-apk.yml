@@ -16,34 +16,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK 36 & accept licenses
+      - name: Install Android SDK packages & accept licenses
         run: |
           SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
           echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
           mkdir -p "$SDK_ROOT/licenses"
-          SDKMANAGER=""
-          if [ -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
-            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          elif command -v sdkmanager >/dev/null 2>&1; then
-            SDKMANAGER="$(command -v sdkmanager)"
-          fi
-          echo "SDK_ROOT=$SDK_ROOT SDKMANAGER=$SDKMANAGER"
-          if [ -n "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --licenses >/dev/null || true
-            "$SDKMANAGER" --install "platform-tools" "build-tools;36.0.0" "platforms;android-36" || true
-            "$SDKMANAGER" --install "platforms;android-36.1" || true
-          fi
-          ls -la "$SDK_ROOT/platforms" || true
+          
+          # Accept all SDK licenses automatically
+          yes | sdkmanager --licenses || true
+          
+          # Install required SDK tools and platforms
+          sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34" || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" || true
 
       - name: Prepare debug keystore and env
         run: |
@@ -121,7 +115,7 @@ jobs:
         if: failure()
         run: |
           free -m || true
-          sudo dmesg | grep -iE "killed process|out of memory" | tail -n 20 || true
+          dmesg | tail -n 20 || true
 
       - name: Write download summary
         if: always()
@@ -132,5 +126,4 @@ jobs:
           else
             echo "### APK built and saved as Actions Artifact" >> "$GITHUB_STEP_SUMMARY"
             echo "Download **ChattingApp-APK** from the **Artifacts** section on this workflow run page." >> "$GITHUB_STEP_SUMMARY"
-            echo "To also publish under **Releases**, enable **Read and write permissions** in **Settings -> Actions -> General -> Workflow permissions** and re-run this job." >> "$GITHUB_STEP_SUMMARY"
           fi

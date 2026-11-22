@@ -3,6 +3,7 @@ package com.example.ui.screens
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.ChatSparkEmblem
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkySoft
 import kotlinx.coroutines.delay
@@ -81,7 +83,8 @@ fun SplashScreen(onFinished: () -> Unit) {
 
         Surface(
             shape = CircleShape,
-            color = SkySoft.copy(alpha = 0.9f * alpha.value),
+            color = SkySoft.copy(alpha = 0.94f * alpha.value),
+            border = BorderStroke(1.dp, LightOutline.copy(alpha = alpha.value)),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()

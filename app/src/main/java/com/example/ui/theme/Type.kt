@@ -87,9 +87,9 @@ val AppTypography = Typography(
     ),
     bodySmall = TextStyle(
         fontFamily = PlusJakartaSansFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 16.sp
+        lineHeight = 17.sp
     ),
     labelLarge = TextStyle(
         fontFamily = PlusJakartaSansFamily,
@@ -99,14 +99,14 @@ val AppTypography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily = PlusJakartaSansFamily,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
         lineHeight = 16.sp
     ),
     labelSmall = TextStyle(
         fontFamily = JetBrainsMonoFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
-        lineHeight = 14.sp
+        lineHeight = 15.sp
     )
 )

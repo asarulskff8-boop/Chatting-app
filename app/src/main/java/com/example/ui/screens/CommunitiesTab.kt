@@ -56,6 +56,7 @@ import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SectionHeader
 import com.example.ui.components.SkeletonPostList
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
@@ -142,7 +143,7 @@ fun CommunitiesTab(
                             Card(
                                 shape = RoundedCornerShape(22.dp),
                                 colors = CardDefaults.cardColors(containerColor = LightSurface),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                border = BorderStroke(1.2.dp, LightOutline),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
@@ -241,7 +242,7 @@ fun CommunitiesTab(
                     onClick = { onOpenGroupChat(grp.id) },
                     shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(containerColor = LightSurface),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    border = BorderStroke(1.2.dp, LightOutline),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {

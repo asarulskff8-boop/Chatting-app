@@ -349,6 +349,7 @@ fun HomeDashboardScreen(
         val useRail = maxWidth >= 600.dp
 
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
             snackbarHost = { SnackbarHost(snackbarHostState) },
             contentWindowInsets = WindowInsets.navigationBars,
             bottomBar = {
@@ -389,7 +390,7 @@ fun HomeDashboardScreen(
                                             Icon(tab.icon, contentDescription = tab.label)
                                         }
                                     },
-                                    label = { Text(tab.label, maxLines = 1) },
+                                    label = { Text(tab.label, fontWeight = if (selectedTabIndex == idx) FontWeight.Bold else FontWeight.Medium, maxLines = 1) },
                                     modifier = Modifier.testTag(tab.tag)
                                 )
                             }

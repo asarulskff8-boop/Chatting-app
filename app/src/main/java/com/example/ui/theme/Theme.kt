@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 enum class ThemeMode(val key: String, val label: String) {
-    LIGHT("light", "Medium Light Mode");
+    LIGHT("light", "Cool Slate Light");
 
     companion object {
         fun fromKey(@Suppress("UNUSED_PARAMETER") key: String?): ThemeMode = LIGHT
@@ -21,31 +21,31 @@ enum class ThemeMode(val key: String, val label: String) {
 }
 
 private val LightColorScheme = lightColorScheme(
-    primary = SkyDeep,
+    primary = SkyPrimary,
     onPrimary = Color.White,
     primaryContainer = SkySoft,
-    onPrimaryContainer = Color(0xFF0C4A6E),
-    secondary = SkyPrimary,
+    onPrimaryContainer = SkyDeep,
+    secondary = SkyBright,
     onSecondary = Color.White,
     secondaryContainer = SkyMist,
-    onSecondaryContainer = Color(0xFF0C4A6E),
+    onSecondaryContainer = SkyDeep,
     tertiary = CyanGlow,
     onTertiary = Color.White,
     tertiaryContainer = SkyMist,
-    onTertiaryContainer = Color(0xFF0C4A6E),
+    onTertiaryContainer = SkyDeep,
     background = LightBackground,
     onBackground = LightOnSurface,
     surface = LightSurface,
     onSurface = LightOnSurface,
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnSurfaceVariant,
-    surfaceBright = LightSurface,
-    surfaceDim = Color(0xFFE2E8F0),
-    surfaceContainerLowest = Color(0xFFFAFBFD),
-    surfaceContainerLow = Color(0xFFF4F7FB),
-    surfaceContainer = Color(0xFFEEF2F7),
-    surfaceContainerHigh = Color(0xFFE5ECF4),
-    surfaceContainerHighest = Color(0xFFDCE4EE),
+    surfaceBright = InputFocusedSurface,
+    surfaceDim = Color(0xFFCFD9E8),
+    surfaceContainerLowest = InputFocusedSurface,
+    surfaceContainerLow = LightSurface,
+    surfaceContainer = Color(0xFFE7EDF6),
+    surfaceContainerHigh = LightBackground,
+    surfaceContainerHighest = LightSurfaceVariant,
     outline = LightOutline,
     outlineVariant = LightOutlineVariant,
     error = Color(0xFFDC2626),

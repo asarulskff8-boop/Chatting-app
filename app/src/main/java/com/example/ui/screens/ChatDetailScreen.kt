@@ -114,7 +114,10 @@ import com.example.ui.components.SkeletonMessageList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatCallDuration
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.InputFocusedSurface
+import com.example.ui.theme.InputRestSurface
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
@@ -254,7 +257,7 @@ fun ChatDetailScreen(
 
     val chatCanvasColor = when (chatStyleIndex) {
         1 -> SkyMist
-        2 -> Color(0xFFDCE9F7)
+        2 -> Color(0xFFD0DEEF)
         else -> LightBackground
     }
 
@@ -432,10 +435,12 @@ fun ChatDetailScreen(
                             maxLines = 4,
                             shape = RoundedCornerShape(24.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = LightSurface,
-                                unfocusedContainerColor = Color(0xFFEDF2F7),
+                                focusedContainerColor = InputFocusedSurface,
+                                unfocusedContainerColor = InputRestSurface,
                                 focusedBorderColor = SkyPrimary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                unfocusedBorderColor = LightOutline,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
@@ -850,8 +855,8 @@ private fun MessageBubble(
         Surface(
             shape = bubbleShape,
             color = if (isMine) SkyPrimary else LightSurface,
-            border = if (isMine) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            shadowElevation = if (isMine) 1.dp else 0.5.dp,
+            border = if (isMine) null else BorderStroke(1.2.dp, LightOutline),
+            shadowElevation = if (isMine) 2.dp else 1.dp,
             modifier = Modifier
                 .widthIn(max = 310.dp)
                 .combinedClickable(onClick = {}, onLongClick = onLongPress)

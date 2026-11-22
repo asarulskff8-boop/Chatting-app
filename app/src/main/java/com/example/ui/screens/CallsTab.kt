@@ -84,6 +84,7 @@ import com.example.ui.components.formatRelativeTime
 import androidx.compose.foundation.BorderStroke
 import com.example.ui.theme.EmeraldOnline
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
@@ -180,7 +181,7 @@ fun CallsTab(
                                 },
                                 shape = RoundedCornerShape(18.dp),
                                 colors = CardDefaults.cardColors(containerColor = LightSurface),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                border = BorderStroke(1.2.dp, LightOutline),
                                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                 modifier = Modifier.fillMaxWidth()
                             ) {

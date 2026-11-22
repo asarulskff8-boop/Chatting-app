@@ -83,15 +83,18 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.draw.alpha
+import androidx.compose.foundation.border
 import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SectionHeader
 import com.example.ui.components.SkeletonPostList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.InputFocusedSurface
+import com.example.ui.theme.InputRestSurface
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.ShimmerBase
-import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
 import com.example.ui.theme.SkySoft
 import com.example.util.MediaUtils
@@ -171,7 +174,8 @@ fun UpdatesTab(
                             modifier = Modifier
                                 .size(64.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .border(1.5.dp, SkyPrimary.copy(alpha = 0.55f), CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(Icons.Rounded.Add, contentDescription = "Post Story", tint = MaterialTheme.colorScheme.primary)
@@ -180,7 +184,7 @@ fun UpdatesTab(
                         Text(
                             "My Story",
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onBackground,
                             maxLines = 1
                         )
@@ -191,8 +195,8 @@ fun UpdatesTab(
                         items(4) {
                             val shimmer = rememberInfiniteTransition(label = "storyShimmer")
                             val pulseAlpha by shimmer.animateFloat(
-                                initialValue = 0.5f,
-                                targetValue = 0.95f,
+                                initialValue = 0.65f,
+                                targetValue = 1.0f,
                                 animationSpec = infiniteRepeatable(
                                     animation = tween(850),
                                     repeatMode = RepeatMode.Reverse
@@ -208,6 +212,7 @@ fun UpdatesTab(
                                         .size(64.dp)
                                         .clip(CircleShape)
                                         .background(ShimmerBase)
+                                        .border(1.2.dp, LightOutline, CircleShape)
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Box(
@@ -225,7 +230,7 @@ fun UpdatesTab(
                             Surface(
                                 shape = RoundedCornerShape(16.dp),
                                 color = LightSurface,
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                border = BorderStroke(1.2.dp, LightOutline),
                                 modifier = Modifier.padding(vertical = 8.dp)
                             ) {
                                 Text(
@@ -296,10 +301,14 @@ fun UpdatesTab(
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
+                    focusedContainerColor = InputFocusedSurface,
                     unfocusedContainerColor = LightSurface,
                     focusedBorderColor = SkyPrimary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    unfocusedBorderColor = LightOutline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -346,7 +355,7 @@ fun UpdatesTab(
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(containerColor = LightSurface),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            border = BorderStroke(1.2.dp, LightOutline),
                             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -402,7 +411,7 @@ fun UpdatesTab(
     if (showCreateStorySheet) {
         var caption by remember { mutableStateOf("") }
         var visibility by remember { mutableStateOf("everyone") }
-        var selectedBg by remember { mutableStateOf("#E0F2FE") }
+        var selectedBg by remember { mutableStateOf("#D6E4FF") }
         var selectedUri by remember { mutableStateOf<Uri?>(null) }
         val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) selectedUri = uri
@@ -430,11 +439,15 @@ fun UpdatesTab(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("#E0F2FE", "#DCFCE7", "#F0F9FF", "#FFE4E6").forEach { hex ->
+                    listOf("#D6E4FF", "#CBD7E9", "#DCFCE7", "#FFE4E6").forEach { hex ->
                         Surface(
                             onClick = { selectedBg = hex },
                             shape = CircleShape,
                             color = Color(android.graphics.Color.parseColor(hex)),
+                            border = BorderStroke(
+                                width = if (selectedBg == hex) 2.5.dp else 1.dp,
+                                color = if (selectedBg == hex) SkyPrimary else LightOutline
+                            ),
                             modifier = Modifier.size(32.dp)
                         ) {}
                     }
@@ -708,7 +721,7 @@ fun UpdatesTab(
                                     Card(
                                         shape = RoundedCornerShape(16.dp),
                                         colors = CardDefaults.cardColors(containerColor = LightSurface),
-                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                        border = BorderStroke(1.2.dp, LightOutline),
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Column(modifier = Modifier.padding(12.dp)) {
@@ -722,11 +735,13 @@ fun UpdatesTab(
                                                     Surface(
                                                         onClick = { onReactChannelPost(channel.id, post, em) },
                                                         shape = CircleShape,
-                                                        color = MaterialTheme.colorScheme.surfaceVariant
+                                                        color = InputRestSurface,
+                                                        border = BorderStroke(1.dp, LightOutline)
                                                     ) {
                                                         Text(
                                                             if (count > 0) "$em $count" else em,
                                                             style = MaterialTheme.typography.labelSmall,
+                                                            color = MaterialTheme.colorScheme.onSurface,
                                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                                                         )
                                                     }

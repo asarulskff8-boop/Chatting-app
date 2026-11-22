@@ -75,6 +75,9 @@ import androidx.compose.foundation.BorderStroke
 import coil.compose.AsyncImage
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.theme.InputFocusedSurface
+import com.example.ui.theme.InputRestSurface
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyBright
 import com.example.ui.theme.SkyPrimary
@@ -192,13 +195,15 @@ fun ProfileSetupScreen(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 color = LightSurface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                border = BorderStroke(1.2.dp, LightOutline)
             ) {
                 val setupFieldColors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color(0xFFEDF2F7),
+                    focusedContainerColor = InputFocusedSurface,
+                    unfocusedContainerColor = InputRestSurface,
                     focusedBorderColor = SkyPrimary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = LightOutline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -72,7 +72,9 @@ import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SkeletonConversationList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.InputFocusedSurface
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightOutline
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
@@ -191,10 +193,12 @@ fun ChatsTab(
                 singleLine = true,
                 shape = RoundedCornerShape(18.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
+                    focusedContainerColor = InputFocusedSurface,
                     unfocusedContainerColor = LightSurface,
                     focusedBorderColor = SkyPrimary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = LightOutline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
@@ -216,7 +220,7 @@ fun ChatsTab(
                     FilterChip(
                         selected = selectedFilter == filter,
                         onClick = { selectedFilter = filter },
-                        label = { Text(filter.label) },
+                        label = { Text(filter.label, fontWeight = FontWeight.SemiBold) },
                         colors = FilterChipDefaults.filterChipColors(
                             containerColor = LightSurface,
                             labelColor = MaterialTheme.colorScheme.onSurface,
@@ -226,7 +230,8 @@ fun ChatsTab(
                         border = FilterChipDefaults.filterChipBorder(
                             enabled = true,
                             selected = selectedFilter == filter,
-                            borderColor = MaterialTheme.colorScheme.outline
+                            borderColor = LightOutline,
+                            selectedBorderColor = SkyPrimary.copy(alpha = 0.55f)
                         )
                     )
                 }
@@ -303,8 +308,8 @@ fun ChatsTab(
                                         containerColor = if (isPinned) SkyMist else LightSurface
                                     ),
                                     border = BorderStroke(
-                                        width = 1.dp,
-                                        color = if (isPinned) SkyPrimary.copy(alpha = 0.25f) else MaterialTheme.colorScheme.outline
+                                        width = 1.2.dp,
+                                        color = if (isPinned) SkyPrimary.copy(alpha = 0.45f) else LightOutline
                                     ),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                     modifier = Modifier

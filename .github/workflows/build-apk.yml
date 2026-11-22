@@ -25,7 +25,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Accept Android SDK licenses
+      - name: Install Android SDK 36 & accept licenses
         run: |
           SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
           echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
@@ -37,9 +37,13 @@ jobs:
           elif command -v sdkmanager >/dev/null 2>&1; then
             SDKMANAGER="$(command -v sdkmanager)"
           fi
+          echo "SDK_ROOT=$SDK_ROOT SDKMANAGER=$SDKMANAGER"
           if [ -n "$SDKMANAGER" ]; then
-            yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
+            yes | "$SDKMANAGER" --licenses >/dev/null || true
+            "$SDKMANAGER" --install "platform-tools" "build-tools;36.0.0" "platforms;android-36" || true
+            "$SDKMANAGER" --install "platforms;android-36.1" || true
           fi
+          ls -la "$SDK_ROOT/platforms" || true
 
       - name: Prepare debug keystore and env
         run: |
@@ -71,7 +75,16 @@ jobs:
           gradle-version: "9.3.1"
 
       - name: Build Debug APK
-        run: gradle :app:assembleDebug --no-daemon --stacktrace
+        run: |
+          java -version
+          gradle --version
+          gradle :app:assembleDebug \
+            --no-daemon \
+            --stacktrace \
+            --max-workers=2 \
+            -Dorg.gradle.jvmargs="-Xmx2560m -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8" \
+            -Dorg.gradle.parallel=false \
+            -Dorg.gradle.configuration-cache=false
 
       - name: Prepare APK asset
         run: |
@@ -103,6 +116,12 @@ jobs:
           make_latest: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Diagnostics on failure
+        if: failure()
+        run: |
+          free -m || true
+          sudo dmesg | grep -iE "killed process|out of memory" | tail -n 20 || true
 
       - name: Write download summary
         if: always()

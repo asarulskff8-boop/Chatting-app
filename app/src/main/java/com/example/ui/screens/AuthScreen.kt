@@ -80,6 +80,7 @@ import androidx.fragment.app.FragmentActivity
 import com.example.data.firebase.AuthManager
 import com.example.ui.components.ChatSparkEmblem
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyBright
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
@@ -218,13 +219,13 @@ fun AuthScreen(
                 }
             }
 
-            // Clean crisp white elevated sheet with subtle cool border
+            // Medium-white elevated sheet with crisp cool border
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-                color = Color.White,
+                color = LightSurface,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 shadowElevation = 6.dp
             ) {
@@ -257,8 +258,10 @@ fun AuthScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = SkyPrimary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color(0xFFEDF2F7),
+                                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -293,8 +296,10 @@ fun AuthScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = SkyPrimary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color(0xFFEDF2F7),
+                                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()

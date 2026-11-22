@@ -72,6 +72,8 @@ import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SkeletonConversationList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
 
@@ -190,9 +192,11 @@ fun ChatsTab(
                 shape = RoundedCornerShape(18.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    unfocusedContainerColor = LightSurface,
                     focusedBorderColor = SkyPrimary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,7 +218,8 @@ fun ChatsTab(
                         onClick = { selectedFilter = filter },
                         label = { Text(filter.label) },
                         colors = FilterChipDefaults.filterChipColors(
-                            containerColor = Color.White,
+                            containerColor = LightSurface,
+                            labelColor = MaterialTheme.colorScheme.onSurface,
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
                         ),
@@ -295,7 +300,7 @@ fun ChatsTab(
                                 Card(
                                     shape = RoundedCornerShape(20.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (isPinned) SkyMist else Color.White
+                                        containerColor = if (isPinned) SkyMist else LightSurface
                                     ),
                                     border = BorderStroke(
                                         width = 1.dp,
@@ -494,7 +499,9 @@ fun ChatsTab(
                                     showNewChatSheet = false
                                     onStartDirectChat(user)
                                 },
-                                shape = RoundedCornerShape(16.dp)
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = LightBackground),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(12.dp),

@@ -110,6 +110,8 @@ import com.example.data.prefs.UserPreferences
 import com.example.ui.components.SectionHeader
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyPrimary
 import com.example.ui.theme.ThemeMode
 import com.example.util.MediaUtils
@@ -179,7 +181,7 @@ fun ProfileTab(
         item {
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -251,7 +253,7 @@ fun ProfileTab(
         item {
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -264,7 +266,12 @@ fun ProfileTab(
                     Text("Friends can scan this to add you instantly", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.height(12.dp))
                     if (qrBitmap != null) {
-                        Surface(shape = RoundedCornerShape(18.dp), color = Color.White, tonalElevation = 2.dp) {
+                        Surface(
+                            shape = RoundedCornerShape(18.dp),
+                            color = Color.White,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            tonalElevation = 1.dp
+                        ) {
                             Image(
                                 bitmap = qrBitmap.asImageBitmap(),
                                 contentDescription = "Personal QR Code",
@@ -327,18 +334,18 @@ fun ProfileTab(
         item {
             Card(
                 shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     SheetActionRow(Icons.Rounded.Security, "Privacy, Security & Notifications") { showPrivacySheet = true }
-                    SheetActionRow(Icons.Rounded.LightMode, "Appearance (Pure Light Mode)") {
+                    SheetActionRow(Icons.Rounded.LightMode, "Appearance (Medium Light Mode)") {
                         onSetThemeMode(ThemeMode.LIGHT)
-                        onShowMessage("Pure Light Mode is active across the entire app")
+                        onShowMessage("Medium Light Mode is active across the entire app")
                     }
-                    SheetActionRow(Icons.Rounded.Wallpaper, "Chat Style (Light Minimal)") { showWallpaperSheet = true }
+                    SheetActionRow(Icons.Rounded.Wallpaper, "Chat Style (Medium Minimal)") { showWallpaperSheet = true }
                     SheetActionRow(Icons.Rounded.Language, "Language (${userPrefs.languageCode})") { showLanguageSheet = true }
                     SheetActionRow(Icons.Rounded.Block, "Blocked Contacts (${blockedUsers.size})") { showBlockedSheet = true }
                     SheetActionRow(Icons.Rounded.Storage, "Storage & Cache Management") { showStorageSheet = true }
@@ -457,8 +464,8 @@ fun ProfileTab(
     if (showWallpaperSheet) {
         ModalBottomSheet(onDismissRequest = { showWallpaperSheet = false }) {
             Column(modifier = Modifier.padding(20.dp)) {
-                Text("Light Chat Theme Style", style = MaterialTheme.typography.titleLarge)
-                listOf("Pure White Minimal", "Sky Breeze Light", "Soft Ice Tint").forEachIndexed { idx, label ->
+                Text("Medium Light Chat Theme Style", style = MaterialTheme.typography.titleLarge)
+                listOf("Medium White Minimal", "Sky Breeze Light", "Soft Ice Tint").forEachIndexed { idx, label ->
                     SheetActionRow(Icons.Rounded.Wallpaper, label) {
                         onSetWallpaperIndex(idx)
                         showWallpaperSheet = false
@@ -563,7 +570,7 @@ fun QrScannerScreen(
         label = "laserY"
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    Box(modifier = Modifier.fillMaxSize().background(LightBackground)) {
         if (hasCameraPerm) {
             val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
             AndroidView(
@@ -620,7 +627,7 @@ fun QrScannerScreen(
         ) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = Color.White.copy(alpha = 0.95f),
+                color = LightSurface.copy(alpha = 0.95f),
                 shadowElevation = 4.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {

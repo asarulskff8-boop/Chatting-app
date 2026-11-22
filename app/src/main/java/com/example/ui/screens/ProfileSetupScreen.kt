@@ -73,7 +73,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.BorderStroke
 import coil.compose.AsyncImage
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyBright
 import com.example.ui.theme.SkyPrimary
 import com.example.ui.theme.SkySoft
@@ -189,9 +191,17 @@ fun ProfileSetupScreen(
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                color = Color.White,
+                color = LightSurface,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
+                val setupFieldColors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color(0xFFEDF2F7),
+                    focusedBorderColor = SkyPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                     AnimatedContent(targetState = step, label = "setupStep") { currentStep ->
                         Column(
@@ -264,6 +274,7 @@ fun ProfileSetupScreen(
                                     leadingIcon = { Icon(Icons.Rounded.Badge, contentDescription = null) },
                                     singleLine = true,
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth().testTag("setup_name_input")
                                 )
 
@@ -278,6 +289,7 @@ fun ProfileSetupScreen(
                                     supportingText = { Text("3-30 characters, letters, numbers & underscore") },
                                     singleLine = true,
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth().testTag("setup_username_input")
                                 )
 
@@ -290,6 +302,7 @@ fun ProfileSetupScreen(
                                     label = { Text("Verified Google Email") },
                                     leadingIcon = { Icon(Icons.Rounded.Email, contentDescription = null) },
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth()
                                 )
 
@@ -331,6 +344,7 @@ fun ProfileSetupScreen(
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                                     singleLine = true,
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth().testTag("setup_phone_input")
                                 )
 
@@ -344,6 +358,7 @@ fun ProfileSetupScreen(
                                     minLines = 2,
                                     maxLines = 4,
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth().testTag("setup_bio_input")
                                 )
 
@@ -355,6 +370,7 @@ fun ProfileSetupScreen(
                                     label = { Text("Profile Status") },
                                     singleLine = true,
                                     shape = RoundedCornerShape(16.dp),
+                                    colors = setupFieldColors,
                                     modifier = Modifier.fillMaxWidth()
                                 )
 

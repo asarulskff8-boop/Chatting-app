@@ -59,6 +59,8 @@ import com.example.data.model.MediaFile
 import com.example.ui.theme.CyanGlow
 import com.example.ui.theme.EmeraldOnline
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
+import com.example.ui.theme.ShimmerBase
 import com.example.ui.theme.SkyBright
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
@@ -102,10 +104,10 @@ fun OrbitalPortalBackground(
         val center = Offset(size.width * 0.5f, size.height * centerYFraction)
         val maxR = maxOf(size.width, size.height) * 0.78f
 
-        // Clean pure-white to soft sky-mist canvas
+        // Calm medium-white sky gradient (glare-free, readable contrast)
         drawRect(
             brush = Brush.radialGradient(
-                colors = listOf(SkyMist, Color.White, LightBackground),
+                colors = listOf(Color(0xFFE3EEF9), LightBackground, Color(0xFFE5ECF4)),
                 center = center,
                 radius = maxR
             )
@@ -119,10 +121,10 @@ fun OrbitalPortalBackground(
 
         ringRadii.forEachIndexed { idx, r ->
             drawCircle(
-                color = SkyPrimary.copy(alpha = 0.11f - idx * 0.025f),
+                color = SkyPrimary.copy(alpha = 0.16f - idx * 0.03f),
                 radius = r,
                 center = center,
-                style = Stroke(width = 1.dp.toPx())
+                style = Stroke(width = 1.2.dp.toPx())
             )
         }
 
@@ -304,10 +306,10 @@ fun EmptyStateCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = LightSurface
         ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -356,48 +358,186 @@ fun EmptyStateCard(
 fun SkeletonConversationList(count: Int = 5) {
     val infinite = rememberInfiniteTransition(label = "shimmer")
     val alpha by infinite.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 0.7f,
+        initialValue = 0.55f,
+        targetValue = 0.95f,
         animationSpec = infiniteRepeatable(
-            animation = tween(900),
+            animation = tween(850),
             repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"
     )
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        repeat(count) {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(alpha)
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(ShimmerBase)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.55f)
+                                .height(14.dp)
+                                .clip(RoundedCornerShape(7.dp))
+                                .background(ShimmerBase)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .height(12.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SkeletonPostList(count: Int = 3) {
+    val infinite = rememberInfiniteTransition(label = "postShimmer")
+    val alpha by infinite.animateFloat(
+        initialValue = 0.55f,
+        targetValue = 0.95f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(850),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "postAlpha"
+    )
+    Column(
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         repeat(count) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(alpha)
-                    .padding(vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Box(
+                Column(
                     modifier = Modifier
-                        .size(52.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                )
-                Spacer(modifier = Modifier.width(14.dp))
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        .fillMaxWidth()
+                        .alpha(alpha)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(CircleShape)
+                                .background(ShimmerBase)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.45f)
+                                    .height(13.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(ShimmerBase)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.3f)
+                                    .height(10.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                        }
+                    }
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(0.55f)
-                            .height(14.dp)
-                            .clip(RoundedCornerShape(7.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .fillMaxWidth(0.92f)
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(ShimmerBase)
                     )
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(0.85f)
+                            .fillMaxWidth(0.72f)
                             .height(12.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SkeletonMessageList(count: Int = 5) {
+    val infinite = rememberInfiniteTransition(label = "msgShimmer")
+    val alpha by infinite.animateFloat(
+        initialValue = 0.55f,
+        targetValue = 0.95f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(850),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "msgAlpha"
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .alpha(alpha),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        repeat(count) { idx ->
+            val isMine = idx % 2 == 1
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(18.dp),
+                    color = if (isMine) SkySoft else LightSurface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier.width(if (idx % 3 == 0) 210.dp else 160.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .height(12.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(ShimmerBase)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .height(10.dp)
+                                .clip(RoundedCornerShape(5.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        )
+                    }
                 }
             }
         }

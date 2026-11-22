@@ -77,11 +77,14 @@ import com.example.data.model.UiState
 import com.example.data.model.UserProfile
 import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.OrbitalPortalBackground
+import com.example.ui.components.SkeletonConversationList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatCallDuration
 import com.example.ui.components.formatRelativeTime
 import androidx.compose.foundation.BorderStroke
 import com.example.ui.theme.EmeraldOnline
+import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
@@ -133,37 +136,54 @@ fun CallsTab(
                 )
             }
 
-            if (calls.isEmpty()) {
-                item {
-                    EmptyStateCard(
-                        icon = Icons.Rounded.Call,
-                        title = "No call history yet",
-                        subtitle = "Tap the Call button to start a voice or video call with any contact.",
-                        actionLabel = "Make a Call",
-                        onAction = { showNewCallSheet = true }
-                    )
+            when (callsState) {
+                is UiState.Loading -> {
+                    item {
+                        SkeletonConversationList(count = 4)
+                    }
                 }
-            } else {
-                items(calls, key = { it.id }) { call ->
-                    val isOutgoing = call.callerId == myProfile.userId
-                    val partnerId = if (isOutgoing) call.calleeId else call.callerId
-                    val partnerName = if (isOutgoing) call.calleeName else call.callerName
-                    val partnerPhoto = if (isOutgoing) call.calleePhotoUrl else call.callerPhotoUrl
-                    val partner = usersById[partnerId]
+                is UiState.Error -> {
+                    item {
+                        EmptyStateCard(
+                            icon = Icons.Rounded.Call,
+                            title = "Could not load call history",
+                            subtitle = callsState.message
+                        )
+                    }
+                }
+                is UiState.Success -> {
+                    if (calls.isEmpty()) {
+                        item {
+                            EmptyStateCard(
+                                icon = Icons.Rounded.Call,
+                                title = "No call history yet",
+                                subtitle = "Tap the Call button to start a voice or video call with any contact.",
+                                actionLabel = "Make a Call",
+                                onAction = { showNewCallSheet = true }
+                            )
+                        }
+                    } else {
+                        items(calls, key = { it.id }) { call ->
+                            val isOutgoing = call.callerId == myProfile.userId
+                            val partnerId = if (isOutgoing) call.calleeId else call.callerId
+                            val partnerName = if (isOutgoing) call.calleeName else call.callerName
+                            val partnerPhoto = if (isOutgoing) call.calleePhotoUrl else call.callerPhotoUrl
+                            val partner = usersById[partnerId]
 
-                    Card(
-                        onClick = {
-                            if (call.status == "ringing" || call.status == "connected") {
-                                onOpenCallScreen(call)
-                            } else if (partner != null) {
-                                onStartCall(partner, call.callType)
-                            }
-                        },
-                        shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                            Card(
+                                onClick = {
+                                    if (call.status == "ringing" || call.status == "connected") {
+                                        onOpenCallScreen(call)
+                                    } else if (partner != null) {
+                                        onStartCall(partner, call.callType)
+                                    }
+                                },
+                                shape = RoundedCornerShape(18.dp),
+                                colors = CardDefaults.cardColors(containerColor = LightSurface),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(14.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -205,10 +225,12 @@ fun CallsTab(
                                 }
                             }
                         }
+                        }
                     }
                 }
             }
         }
+    }
     }
 
     if (showNewCallSheet) {
@@ -222,7 +244,11 @@ fun CallsTab(
                 } else {
                     LazyColumn(modifier = Modifier.height(280.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(otherUsers, key = { it.userId }) { user ->
-                            Card(shape = RoundedCornerShape(16.dp)) {
+                            Card(
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = LightBackground),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                            ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(12.dp),
                                     verticalAlignment = Alignment.CenterVertically
@@ -433,7 +459,7 @@ fun ActiveCallScreen(
             } else {
                 Surface(
                     shape = RoundedCornerShape(32.dp),
-                    color = Color.White.copy(alpha = 0.95f),
+                    color = LightSurface.copy(alpha = 0.96f),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     shadowElevation = 6.dp,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)

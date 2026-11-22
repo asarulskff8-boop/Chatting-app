@@ -77,11 +77,20 @@ import com.example.data.model.MediaFile
 import com.example.data.model.Story
 import com.example.data.model.UiState
 import com.example.data.model.UserProfile
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.draw.alpha
 import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SectionHeader
+import com.example.ui.components.SkeletonPostList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
 import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
+import com.example.ui.theme.ShimmerBase
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
 import com.example.ui.theme.SkySoft
@@ -168,10 +177,68 @@ fun UpdatesTab(
                             Icon(Icons.Rounded.Add, contentDescription = "Post Story", tint = MaterialTheme.colorScheme.primary)
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text("My Story", style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                        Text(
+                            "My Story",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            maxLines = 1
+                        )
                     }
                 }
-                items(stories, key = { it.id }) { story ->
+                when (storiesState) {
+                    is UiState.Loading -> {
+                        items(4) {
+                            val shimmer = rememberInfiniteTransition(label = "storyShimmer")
+                            val pulseAlpha by shimmer.animateFloat(
+                                initialValue = 0.5f,
+                                targetValue = 0.95f,
+                                animationSpec = infiniteRepeatable(
+                                    animation = tween(850),
+                                    repeatMode = RepeatMode.Reverse
+                                ),
+                                label = "storyAlpha"
+                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.width(72.dp).alpha(pulseAlpha)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .clip(CircleShape)
+                                        .background(ShimmerBase)
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .height(10.dp)
+                                        .clip(RoundedCornerShape(5.dp))
+                                        .background(ShimmerBase)
+                                )
+                            }
+                        }
+                    }
+                    is UiState.Error -> {
+                        item {
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                color = LightSurface,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = "Unable to load stories",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 18.dp)
+                                )
+                            }
+                        }
+                    }
+                    is UiState.Success -> {
+                        items(stories, key = { it.id }) { story ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
@@ -192,9 +259,13 @@ fun UpdatesTab(
                         Text(
                             text = story.authorName.substringBefore(" "),
                             style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+                    }
+                        }
                     }
                 }
             }
@@ -226,7 +297,7 @@ fun UpdatesTab(
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    unfocusedContainerColor = LightSurface,
                     focusedBorderColor = SkyPrimary,
                     unfocusedBorderColor = MaterialTheme.colorScheme.outline
                 ),
@@ -239,29 +310,46 @@ fun UpdatesTab(
                 it.description.contains(channelSearch, ignoreCase = true)
         }
 
-        if (filteredChannels.isEmpty()) {
-            item {
-                EmptyStateCard(
-                    icon = Icons.Rounded.Campaign,
-                    title = "No channels yet",
-                    subtitle = "Launch a public or private broadcast channel to share announcements, media, and updates.",
-                    actionLabel = "Create Channel",
-                    onAction = { showCreateChannelSheet = true }
-                )
+        when (channelsState) {
+            is UiState.Loading -> {
+                item {
+                    SkeletonPostList(count = 3)
+                }
             }
-        } else {
-            items(filteredChannels, key = { it.id }) { channel ->
-                val isSubscribed = myProfile.userId in channel.subscriberUids
-                Card(
-                    onClick = {
-                        openedChannel = channel
-                        onSelectChannel(channel)
-                    },
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+            is UiState.Error -> {
+                item {
+                    EmptyStateCard(
+                        icon = Icons.Rounded.Campaign,
+                        title = "Could not load channels",
+                        subtitle = channelsState.message
+                    )
+                }
+            }
+            is UiState.Success -> {
+                if (filteredChannels.isEmpty()) {
+                    item {
+                        EmptyStateCard(
+                            icon = Icons.Rounded.Campaign,
+                            title = "No channels yet",
+                            subtitle = "Launch a public or private broadcast channel to share announcements, media, and updates.",
+                            actionLabel = "Create Channel",
+                            onAction = { showCreateChannelSheet = true }
+                        )
+                    }
+                } else {
+                    items(filteredChannels, key = { it.id }) { channel ->
+                        val isSubscribed = myProfile.userId in channel.subscriberUids
+                        Card(
+                            onClick = {
+                                openedChannel = channel
+                                onSelectChannel(channel)
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = LightSurface),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -302,6 +390,8 @@ fun UpdatesTab(
                                 shape = CircleShape
                             ) { Text("Follow") }
                         }
+                    }
+                }
                     }
                 }
             }
@@ -504,8 +594,9 @@ fun UpdatesTab(
                                 Surface(
                                     onClick = { onReactToStory(story, emoji) },
                                     shape = CircleShape,
-                                    color = Color.White,
-                                    tonalElevation = 2.dp
+                                    color = LightSurface,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                    tonalElevation = 1.dp
                                 ) {
                                     Text(emoji, modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp))
                                 }
@@ -588,26 +679,59 @@ fun UpdatesTab(
                     modifier = Modifier.height(260.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(posts, key = { it.id }) { post ->
-                        Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Text(post.authorName, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(post.text, style = MaterialTheme.typography.bodyMedium)
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                    listOf("👍", "🔥", "💜").forEach { em ->
-                                        val count = post.reactions.values.count { it == em }
-                                        Surface(
-                                            onClick = { onReactChannelPost(channel.id, post, em) },
-                                            shape = CircleShape,
-                                            color = MaterialTheme.colorScheme.surfaceVariant
-                                        ) {
-                                            Text(
-                                                if (count > 0) "$em $count" else em,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                            )
+                    when (activeChannelPostsState) {
+                        is UiState.Loading -> {
+                            item {
+                                SkeletonPostList(count = 2)
+                            }
+                        }
+                        is UiState.Error -> {
+                            item {
+                                EmptyStateCard(
+                                    icon = Icons.Rounded.Campaign,
+                                    title = "Unable to load posts",
+                                    subtitle = activeChannelPostsState.message
+                                )
+                            }
+                        }
+                        is UiState.Success -> {
+                            if (posts.isEmpty()) {
+                                item {
+                                    EmptyStateCard(
+                                        icon = Icons.Rounded.Campaign,
+                                        title = "No posts yet",
+                                        subtitle = "Broadcast posts in this channel will appear here."
+                                    )
+                                }
+                            } else {
+                                items(posts, key = { it.id }) { post ->
+                                    Card(
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(containerColor = LightSurface),
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Column(modifier = Modifier.padding(12.dp)) {
+                                            Text(post.authorName, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(post.text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                                            Spacer(modifier = Modifier.height(6.dp))
+                                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                                listOf("👍", "🔥", "💜").forEach { em ->
+                                                    val count = post.reactions.values.count { it == em }
+                                                    Surface(
+                                                        onClick = { onReactChannelPost(channel.id, post, em) },
+                                                        shape = CircleShape,
+                                                        color = MaterialTheme.colorScheme.surfaceVariant
+                                                    ) {
+                                                        Text(
+                                                            if (count > 0) "$em $count" else em,
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                                        )
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

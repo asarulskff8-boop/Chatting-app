@@ -91,6 +91,7 @@ import androidx.compose.foundation.BorderStroke
 import com.example.ui.theme.EmeraldOnline
 import com.example.ui.theme.LightOnSurfaceVariant
 import com.example.ui.theme.LightOutlineVariant
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
@@ -355,7 +356,7 @@ fun HomeDashboardScreen(
                     Column {
                         HorizontalDivider(color = LightOutlineVariant)
                         NavigationBar(
-                            containerColor = Color.White,
+                            containerColor = LightSurface,
                             tonalElevation = 0.dp
                         ) {
                             HomeTab.entries.forEachIndexed { idx, tab ->
@@ -404,7 +405,7 @@ fun HomeDashboardScreen(
             ) {
                 if (useRail) {
                     NavigationRail(
-                        containerColor = Color.White,
+                        containerColor = LightSurface,
                         modifier = Modifier.fillMaxHeight().statusBarsPadding()
                     ) {
                         Spacer(modifier = Modifier.height(12.dp))

@@ -54,6 +54,11 @@ import com.example.data.model.UiState
 import com.example.data.model.UserProfile
 import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SectionHeader
+import com.example.ui.components.SkeletonPostList
+import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
+import com.example.ui.theme.SkyMist
+import com.example.ui.theme.SkyPrimary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,94 +110,114 @@ fun CommunitiesTab(
                 )
             }
 
-            if (communities.isEmpty()) {
-                item {
-                    EmptyStateCard(
-                        icon = Icons.Rounded.Hub,
-                        title = "Create your first Community",
-                        subtitle = "Bring multiple groups together with announcements, shared admins, and instant member routing.",
-                        actionLabel = "Create Community",
-                        onAction = { showCreateCommunitySheet = true }
-                    )
+            when (communitiesState) {
+                is UiState.Loading -> {
+                    item {
+                        SkeletonPostList(count = 3)
+                    }
                 }
-            } else {
-                items(communities, key = { it.id }) { community ->
-                    val linkedGroups = groups.filter { it.id in community.groupIds || it.communityId == community.id }
-                    Card(
-                        shape = RoundedCornerShape(22.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Surface(
-                                    shape = RoundedCornerShape(14.dp),
-                                    color = MaterialTheme.colorScheme.primaryContainer,
-                                    modifier = Modifier.size(48.dp)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Icon(Icons.Rounded.Hub, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                    }
-                                }
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(community.name, style = MaterialTheme.typography.titleMedium)
-                                    Text(
-                                        "${community.memberUids.size} members • ${linkedGroups.size} groups",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                            if (community.announcementText.isNotBlank()) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(10.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(Icons.Rounded.Campaign, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(community.announcementText, style = MaterialTheme.typography.bodySmall)
-                                    }
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            linkedGroups.forEach { grp ->
-                                Surface(
-                                    onClick = { onOpenGroupChat(grp.id) },
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                                    modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp)
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(10.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(Icons.Rounded.Groups, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Column(modifier = Modifier.weight(1f)) {
-                                            Text(grp.title, style = MaterialTheme.typography.titleSmall)
-                                            Text(grp.lastMessageText, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                        }
-                                    }
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            OutlinedButton(
-                                onClick = { targetCommunityForGroup = community },
-                                shape = CircleShape,
+                is UiState.Error -> {
+                    item {
+                        EmptyStateCard(
+                            icon = Icons.Rounded.Hub,
+                            title = "Could not load communities",
+                            subtitle = communitiesState.message
+                        )
+                    }
+                }
+                is UiState.Success -> {
+                    if (communities.isEmpty()) {
+                        item {
+                            EmptyStateCard(
+                                icon = Icons.Rounded.Hub,
+                                title = "Create your first Community",
+                                subtitle = "Bring multiple groups together with announcements, shared admins, and instant member routing.",
+                                actionLabel = "Create Community",
+                                onAction = { showCreateCommunitySheet = true }
+                            )
+                        }
+                    } else {
+                        items(communities, key = { it.id }) { community ->
+                            val linkedGroups = groups.filter { it.id in community.groupIds || it.communityId == community.id }
+                            Card(
+                                shape = RoundedCornerShape(22.dp),
+                                colors = CardDefaults.cardColors(containerColor = LightSurface),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Add Group to Community")
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Surface(
+                                            shape = RoundedCornerShape(14.dp),
+                                            color = MaterialTheme.colorScheme.primaryContainer,
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Icon(Icons.Rounded.Hub, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(community.name, style = MaterialTheme.typography.titleMedium)
+                                            Text(
+                                                "${community.memberUids.size} members • ${linkedGroups.size} groups",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                    if (community.announcementText.isNotBlank()) {
+                                        Spacer(modifier = Modifier.height(10.dp))
+                                        Surface(
+                                            shape = RoundedCornerShape(12.dp),
+                                            color = SkyMist,
+                                            border = BorderStroke(1.dp, SkyPrimary.copy(alpha = 0.25f)),
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(10.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(Icons.Rounded.Campaign, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text(community.announcementText, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    linkedGroups.forEach { grp ->
+                                        Surface(
+                                            onClick = { onOpenGroupChat(grp.id) },
+                                            shape = RoundedCornerShape(12.dp),
+                                            color = LightBackground,
+                                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                            modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(10.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(Icons.Rounded.Groups, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                                Spacer(modifier = Modifier.width(10.dp))
+                                                Column(modifier = Modifier.weight(1f)) {
+                                                    Text(grp.title, style = MaterialTheme.typography.titleSmall)
+                                                    Text(grp.lastMessageText, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OutlinedButton(
+                                        onClick = { targetCommunityForGroup = community },
+                                        shape = CircleShape,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Icon(Icons.Rounded.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Add Group to Community")
+                                    }
+                                }
                             }
                         }
                     }
@@ -215,8 +240,9 @@ fun CommunitiesTab(
                 Card(
                     onClick = { onOpenGroupChat(grp.id) },
                     shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors(containerColor = LightSurface),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {

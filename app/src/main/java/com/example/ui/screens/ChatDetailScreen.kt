@@ -103,14 +103,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
+import androidx.compose.material.icons.rounded.ChatBubbleOutline
 import com.example.data.model.Conversation
 import com.example.data.model.MediaFile
 import com.example.data.model.Message
 import com.example.data.model.UiState
 import com.example.data.model.UserProfile
+import com.example.ui.components.EmptyStateCard
+import com.example.ui.components.SkeletonMessageList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatCallDuration
 import com.example.ui.components.formatRelativeTime
+import com.example.ui.theme.LightBackground
+import com.example.ui.theme.LightSurface
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
@@ -249,15 +254,15 @@ fun ChatDetailScreen(
 
     val chatCanvasColor = when (chatStyleIndex) {
         1 -> SkyMist
-        2 -> SkySoft.copy(alpha = 0.55f)
-        else -> Color.White
+        2 -> Color(0xFFDCE9F7)
+        else -> LightBackground
     }
 
     Scaffold(
         modifier = Modifier.imePadding(),
         containerColor = chatCanvasColor,
         topBar = {
-            Surface(color = Color.White, tonalElevation = 2.dp, shadowElevation = 2.dp) {
+            Surface(color = LightSurface, tonalElevation = 1.dp, shadowElevation = 2.dp) {
                 Column(modifier = Modifier.statusBarsPadding()) {
                     Row(
                         modifier = Modifier
@@ -343,7 +348,7 @@ fun ChatDetailScreen(
             }
         },
         bottomBar = {
-            Surface(color = Color.White, tonalElevation = 0.dp) {
+            Surface(color = LightSurface, tonalElevation = 0.dp) {
                 Column(modifier = Modifier.navigationBarsPadding()) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     // Reply / Edit Banner
@@ -427,10 +432,12 @@ fun ChatDetailScreen(
                             maxLines = 4,
                             shape = RoundedCornerShape(24.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                focusedContainerColor = LightSurface,
+                                unfocusedContainerColor = Color(0xFFEDF2F7),
                                 focusedBorderColor = SkyPrimary,
-                                unfocusedBorderColor = Color.Transparent
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier.weight(1f).testTag("message_input")
                         )
@@ -494,41 +501,85 @@ fun ChatDetailScreen(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            items(messages, key = { it.id }) { msg ->
-                val isMine = msg.senderId == myProfile.userId
-                val media = mediaCache[msg.mediaId]
-                if (msg.mediaId.isNotBlank() && media == null) {
-                    onRequestMedia(msg.mediaId)
+        when (messagesState) {
+            is UiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    SkeletonMessageList(count = 5)
                 }
-
-                MessageBubble(
-                    message = msg,
-                    isMine = isMine,
-                    showSenderName = conversation.type == "group" && !isMine,
-                    media = media,
-                    isPlayingAudio = playingAudioId == msg.id,
-                    onLongPress = { selectedMessage = msg },
-                    onImageTap = { b64 -> previewBitmapBase64 = b64 },
-                    onToggleAudioPlay = { m ->
-                        if (playingAudioId == msg.id) {
-                            voiceController.stopPlayback()
-                            playingAudioId = null
-                        } else {
-                            playingAudioId = msg.id
-                            voiceController.playBase64Audio(m.fileName, m.base64Data) {
-                                playingAudioId = null
+            }
+            is UiState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    EmptyStateCard(
+                        icon = Icons.Rounded.ChatBubbleOutline,
+                        title = "Unable to load messages",
+                        subtitle = messagesState.message
+                    )
+                }
+            }
+            is UiState.Success -> {
+                if (messages.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        EmptyStateCard(
+                            icon = Icons.Rounded.ChatBubbleOutline,
+                            title = "Say hello!",
+                            subtitle = "Send a message, photo, voice note, or sticker to start chatting."
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        state = listState,
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        items(messages, key = { it.id }) { msg ->
+                            val isMine = msg.senderId == myProfile.userId
+                            val media = mediaCache[msg.mediaId]
+                            if (msg.mediaId.isNotBlank() && media == null) {
+                                onRequestMedia(msg.mediaId)
                             }
+
+                            MessageBubble(
+                                message = msg,
+                                isMine = isMine,
+                                showSenderName = conversation.type == "group" && !isMine,
+                                media = media,
+                                isPlayingAudio = playingAudioId == msg.id,
+                                onLongPress = { selectedMessage = msg },
+                                onImageTap = { b64 -> previewBitmapBase64 = b64 },
+                                onToggleAudioPlay = { m ->
+                                    if (playingAudioId == msg.id) {
+                                        voiceController.stopPlayback()
+                                        playingAudioId = null
+                                    } else {
+                                        playingAudioId = msg.id
+                                        voiceController.playBase64Audio(m.fileName, m.base64Data) {
+                                            playingAudioId = null
+                                        }
+                                    }
+                                }
+                            )
                         }
                     }
-                )
+                }
             }
         }
     }
@@ -662,7 +713,7 @@ fun ChatDetailScreen(
     previewBitmapBase64?.let { b64 ->
         val bmp = remember(b64) { MediaUtils.decodeBase64ToBitmap(b64) }
         Dialog(onDismissRequest = { previewBitmapBase64 = null }) {
-            Surface(shape = RoundedCornerShape(24.dp), color = Color.White, tonalElevation = 6.dp) {
+            Surface(shape = RoundedCornerShape(24.dp), color = LightSurface, tonalElevation = 6.dp) {
                 Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                     if (bmp != null) {
                         Image(
@@ -798,7 +849,7 @@ private fun MessageBubble(
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = alignment) {
         Surface(
             shape = bubbleShape,
-            color = if (isMine) SkyPrimary else Color.White,
+            color = if (isMine) SkyPrimary else LightSurface,
             border = if (isMine) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = if (isMine) 1.dp else 0.5.dp,
             modifier = Modifier

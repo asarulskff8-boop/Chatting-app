@@ -97,6 +97,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -301,6 +302,54 @@ fun ProfileTab(
                             Icon(Icons.Rounded.Share, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
                             Text("Share")
+                        }
+                    }
+                }
+            }
+        }
+
+        // App APK Download Card
+        item {
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = LightSurface),
+                border = BorderStroke(1.2.dp, LightOutline),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(Icons.Rounded.Download, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(36.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Download App APK", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("Install Chatting App on any Android device instantly", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Button(
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(apkDownloadUrl))
+                                context.startActivity(intent)
+                            },
+                            shape = CircleShape,
+                            modifier = Modifier.testTag("download_apk_button")
+                        ) {
+                            Icon(Icons.Rounded.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Download APK")
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                cm.setPrimaryClip(ClipData.newPlainText("APK Link", apkDownloadUrl))
+                                onShowMessage("Download link copied!")
+                            },
+                            shape = CircleShape
+                        ) {
+                            Icon(Icons.Rounded.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Copy Link")
                         }
                     }
                 }

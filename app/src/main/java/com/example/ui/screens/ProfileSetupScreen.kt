@@ -114,7 +114,7 @@ fun ProfileSetupScreen(
     }
 
     var step by remember { mutableIntStateOf(0) } // 0: Identity, 1: Contact & Bio, 2: Ready!
-    var displayName by remember { mutableStateOf(googleName.ifBlank { "New Member" }) }
+    var displayName by remember { mutableStateOf(googleName.ifBlank { "Asarul Sk" }) }
     var username by remember { mutableStateOf(defaultUsername) }
     var bio by remember { mutableStateOf("") }
     var statusText by remember { mutableStateOf("Connect Beyond Messages.") }

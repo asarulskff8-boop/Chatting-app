@@ -58,19 +58,19 @@ fun SplashScreen(onFinished: () -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
             Box(modifier = Modifier.scale(scale.value)) {
-                ChatSparkEmblem(size = 104.dp)
+                ChatSparkEmblem(size = 96.dp)
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
-                text = "CHATTING APP",
+                text = "Chatting App",
                 style = MaterialTheme.typography.displayMedium.copy(
-                    letterSpacing = 2.sp,
+                    letterSpacing = 0.2.sp,
                     fontWeight = FontWeight.Bold
                 ),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.alpha(alpha.value)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Connect Beyond Messages.",
                 style = MaterialTheme.typography.titleMedium,

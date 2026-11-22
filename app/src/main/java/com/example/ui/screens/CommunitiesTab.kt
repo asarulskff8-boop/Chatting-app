@@ -41,8 +41,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -76,6 +78,7 @@ fun CommunitiesTab(
             FloatingActionButton(
                 onClick = { showCreateCommunitySheet = true },
                 containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White,
                 modifier = Modifier.testTag("create_community_fab")
             ) {
                 Icon(Icons.Rounded.Add, contentDescription = "Create Community")
@@ -117,8 +120,9 @@ fun CommunitiesTab(
                     val linkedGroups = groups.filter { it.id in community.groupIds || it.communityId == community.id }
                     Card(
                         shape = RoundedCornerShape(22.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -211,6 +215,8 @@ fun CommunitiesTab(
                 Card(
                     onClick = { onOpenGroupChat(grp.id) },
                     shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {

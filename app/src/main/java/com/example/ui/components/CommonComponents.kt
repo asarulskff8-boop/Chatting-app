@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,8 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -39,23 +38,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.R
 import com.example.data.model.MediaFile
-import com.example.ui.theme.CoralAccent
 import com.example.ui.theme.CyanGlow
 import com.example.ui.theme.EmeraldOnline
 import com.example.ui.theme.LightBackground
@@ -102,10 +102,10 @@ fun OrbitalPortalBackground(
         val center = Offset(size.width * 0.5f, size.height * centerYFraction)
         val maxR = maxOf(size.width, size.height) * 0.78f
 
-        // Crisp pure white minimal canvas with a subtle whisper of sky mist
+        // Clean pure-white to soft sky-mist canvas
         drawRect(
             brush = Brush.radialGradient(
-                colors = listOf(SkyMist, LightBackground, LightBackground),
+                colors = listOf(SkyMist, Color.White, LightBackground),
                 center = center,
                 radius = maxR
             )
@@ -119,20 +119,20 @@ fun OrbitalPortalBackground(
 
         ringRadii.forEachIndexed { idx, r ->
             drawCircle(
-                color = SkyPrimary.copy(alpha = 0.14f - idx * 0.03f),
+                color = SkyPrimary.copy(alpha = 0.11f - idx * 0.025f),
                 radius = r,
                 center = center,
-                style = Stroke(width = 1.2.dp.toPx())
+                style = Stroke(width = 1.dp.toPx())
             )
         }
 
         // Outer dashed orbital circle in soft sky blue
         drawCircle(
-            color = SkyBright.copy(alpha = 0.22f),
+            color = SkyBright.copy(alpha = 0.16f),
             radius = size.minDimension * 0.65f,
             center = center,
             style = Stroke(
-                width = 1.1.dp.toPx(),
+                width = 1.dp.toPx(),
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 14f), 0f)
             )
         )
@@ -142,28 +142,28 @@ fun OrbitalPortalBackground(
             center.x + ringRadii[1] * cos(orbitAngle - 2.3f),
             center.y + ringRadii[1] * sin(orbitAngle - 2.3f)
         )
-        drawCircle(color = SkySoft.copy(alpha = 0.85f * pulse), radius = 12.dp.toPx(), center = p1)
-        drawCircle(color = SkyPrimary, radius = 4.5.dp.toPx(), center = p1)
+        drawCircle(color = SkySoft.copy(alpha = 0.85f * pulse), radius = 10.dp.toPx(), center = p1)
+        drawCircle(color = SkyPrimary, radius = 4.dp.toPx(), center = p1)
 
         val p2 = Offset(
             center.x + ringRadii[0] * cos(-orbitAngle + 1.55f),
             center.y + ringRadii[0] * sin(-orbitAngle + 1.55f)
         )
-        drawCircle(color = SkySoft, radius = 9.dp.toPx(), center = p2)
-        drawCircle(color = CyanGlow, radius = 3.5.dp.toPx(), center = p2)
+        drawCircle(color = SkySoft, radius = 8.dp.toPx(), center = p2)
+        drawCircle(color = CyanGlow, radius = 3.2.dp.toPx(), center = p2)
 
         val p3 = Offset(
             center.x + ringRadii[2] * cos(orbitAngle * 0.7f - 0.7f),
             center.y + ringRadii[2] * sin(orbitAngle * 0.7f - 0.7f)
         )
-        drawCircle(color = SkyBright.copy(alpha = 0.28f), radius = 10.dp.toPx(), center = p3)
-        drawCircle(color = SkyDeep, radius = 3.8.dp.toPx(), center = p3)
+        drawCircle(color = SkyBright.copy(alpha = 0.25f), radius = 9.dp.toPx(), center = p3)
+        drawCircle(color = SkyDeep, radius = 3.5.dp.toPx(), center = p3)
 
         val p4 = Offset(
             center.x + (size.minDimension * 0.65f) * cos(-orbitAngle * 0.5f + 0.1f),
             center.y + (size.minDimension * 0.65f) * sin(-orbitAngle * 0.5f + 0.1f)
         )
-        drawCircle(color = SkyBright, radius = 2.8.dp.toPx(), center = p4)
+        drawCircle(color = SkyBright, radius = 2.6.dp.toPx(), center = p4)
     }
 }
 
@@ -172,62 +172,30 @@ fun ChatSparkEmblem(
     size: Dp = 84.dp,
     modifier: Modifier = Modifier
 ) {
-    val infinite = rememberInfiniteTransition(label = "emblemGlow")
-    val glowAlpha by infinite.animateFloat(
-        initialValue = 0.22f,
-        targetValue = 0.42f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2200, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "glow"
-    )
-
-    Box(modifier = modifier.size(size * 1.45f), contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        SkyBright.copy(alpha = glowAlpha),
-                        SkySoft.copy(alpha = glowAlpha * 0.5f),
-                        Color.Transparent
-                    )
-                ),
-                radius = this.size.minDimension * 0.5f
+    val cornerShape = RoundedCornerShape((size.value * 0.28f).dp)
+    Box(
+        modifier = modifier
+            .size(size)
+            .shadow(
+                elevation = (size.value * 0.12f).coerceIn(4f, 14f).dp,
+                shape = cornerShape,
+                ambientColor = SkyPrimary.copy(alpha = 0.35f),
+                spotColor = SkyDeep.copy(alpha = 0.35f)
             )
-        }
-        Box(
-            modifier = Modifier
-                .size(size)
-                .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(SkyDeep, SkyPrimary, SkyBright)
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Canvas(modifier = Modifier.size(size * 0.54f)) {
-                val w = this.size.width
-                val h = this.size.height
-                val cx = w / 2f
-                val cy = h / 2f
-                val outer = w * 0.48f
-                val inner = w * 0.14f
-                val path = Path().apply {
-                    moveTo(cx, cy - outer)
-                    lineTo(cx + inner, cy - inner)
-                    lineTo(cx + outer, cy)
-                    lineTo(cx + inner, cy + inner)
-                    lineTo(cx, cy + outer)
-                    lineTo(cx - inner, cy + inner)
-                    lineTo(cx - outer, cy)
-                    lineTo(cx - inner, cy - inner)
-                    close()
-                }
-                drawPath(path = path, color = Color.White)
-            }
-        }
+            .clip(cornerShape)
+            .border(
+                width = (size.value * 0.03f).coerceIn(1.5f, 3f).dp,
+                color = Color.White,
+                shape = cornerShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.chatting_app_logo_1795337395527),
+            contentDescription = "Chatting App Logo",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -336,8 +304,10 @@ fun EmptyStateCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
-        )
+            containerColor = Color.White
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
             modifier = Modifier

@@ -43,6 +43,7 @@ import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material.icons.rounded.VolumeOff
 import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -105,6 +106,7 @@ fun CallsTab(
             FloatingActionButton(
                 onClick = { showNewCallSheet = true },
                 containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White,
                 modifier = Modifier.testTag("new_call_fab")
             ) {
                 Icon(Icons.Rounded.Call, contentDescription = "Start Call")
@@ -158,6 +160,8 @@ fun CallsTab(
                             }
                         },
                         shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(

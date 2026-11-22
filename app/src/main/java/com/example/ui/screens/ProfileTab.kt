@@ -44,6 +44,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Help
@@ -52,11 +53,11 @@ import androidx.compose.material.icons.rounded.Block
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
-import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Language
+import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.PersonAdd
@@ -178,7 +179,9 @@ fun ProfileTab(
         item {
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -246,7 +249,13 @@ fun ProfileTab(
 
         // Personal QR Code Card
         item {
-            Card(shape = RoundedCornerShape(24.dp), modifier = Modifier.fillMaxWidth()) {
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(18.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -316,10 +325,16 @@ fun ProfileTab(
         // Settings Section
         item { SectionHeader(title = "Account & App Settings") }
         item {
-            Card(shape = RoundedCornerShape(22.dp), modifier = Modifier.fillMaxWidth()) {
+            Card(
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     SheetActionRow(Icons.Rounded.Security, "Privacy, Security & Notifications") { showPrivacySheet = true }
-                    SheetActionRow(Icons.Rounded.DarkMode, "Appearance (Pure Light Mode)") {
+                    SheetActionRow(Icons.Rounded.LightMode, "Appearance (Pure Light Mode)") {
                         onSetThemeMode(ThemeMode.LIGHT)
                         onShowMessage("Pure Light Mode is active across the entire app")
                     }

@@ -16,29 +16,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Accept Android SDK licenses
         run: |
-          SDK_ROOT="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
-          if [ -n "$SDK_ROOT" ]; then
-            mkdir -p "$SDK_ROOT/licenses"
-            SDKMANAGER=""
-            if [ -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
-              SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-            elif command -v sdkmanager >/dev/null 2>&1; then
-              SDKMANAGER="$(command -v sdkmanager)"
-            fi
-            if [ -n "$SDKMANAGER" ]; then
-              yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
-            fi
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          mkdir -p "$SDK_ROOT/licenses"
+          SDKMANAGER=""
+          if [ -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          elif command -v sdkmanager >/dev/null 2>&1; then
+            SDKMANAGER="$(command -v sdkmanager)"
+          fi
+          if [ -n "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
           fi
 
       - name: Prepare debug keystore and env

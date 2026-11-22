@@ -154,19 +154,23 @@ fun AuthScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-            // Top Header Row: Brand & Need Help pill
+            // Top Header Row: Brand logo + Need Help pill
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Chatting App",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ChatSparkEmblem(size = 34.dp)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Chatting App",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
                 Surface(
                     onClick = { showHelpSheet = true },
                     shape = CircleShape,
@@ -178,22 +182,20 @@ fun AuthScreen(
                         text = "Need help?",
                         style = MaterialTheme.typography.labelLarge,
                         color = SkyDeep,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 9.dp)
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                     )
                 }
             }
 
-            // Luminous central emblem + animated greeting
+            // Clean, balanced hero logo + animated greeting (wrap-height prevents clipping)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.42f)
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(horizontal = 24.dp, vertical = 14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ChatSparkEmblem(size = 86.dp)
-                Spacer(modifier = Modifier.height(10.dp))
+                ChatSparkEmblem(size = 76.dp)
+                Spacer(modifier = Modifier.height(14.dp))
                 AnimatedVisibility(
                     visible = revealHeading,
                     enter = fadeIn() + slideInVertically { it / 3 }
@@ -201,14 +203,14 @@ fun AuthScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "Hello again.",
-                            style = MaterialTheme.typography.displayLarge.copy(fontSize = 36.sp),
+                            style = MaterialTheme.typography.displayLarge.copy(fontSize = 30.sp),
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Pick up right where you left off.",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
@@ -220,8 +222,8 @@ fun AuthScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.58f),
-                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                    .weight(1f),
+                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
                 color = Color.White,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 shadowElevation = 6.dp

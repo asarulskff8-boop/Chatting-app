@@ -43,13 +43,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -86,9 +89,12 @@ import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
 import androidx.compose.foundation.BorderStroke
 import com.example.ui.theme.EmeraldOnline
+import com.example.ui.theme.LightOnSurfaceVariant
+import com.example.ui.theme.LightOutlineVariant
 import com.example.ui.theme.SkyDeep
 import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
+import com.example.ui.theme.SkySoft
 import com.example.ui.theme.ThemeMode
 import com.example.ui.viewmodel.MainViewModel
 import com.example.util.NotificationHelper
@@ -346,31 +352,46 @@ fun HomeDashboardScreen(
             contentWindowInsets = WindowInsets.navigationBars,
             bottomBar = {
                 if (!useRail) {
-                    NavigationBar {
-                        HomeTab.entries.forEachIndexed { idx, tab ->
-                            val badgeCount = when (tab) {
-                                HomeTab.CHATS -> totalUnreadChats
-                                HomeTab.PROFILE -> pendingFriendRequests
-                                HomeTab.CALLS -> if (incomingRingingCall != null) 1 else 0
-                                else -> 0
-                            }
-                            NavigationBarItem(
-                                selected = selectedTabIndex == idx,
-                                onClick = { selectedTabIndex = idx },
-                                icon = {
-                                    BadgedBox(
-                                        badge = {
-                                            if (badgeCount > 0) {
-                                                Badge { Text(badgeCount.toString()) }
+                    Column {
+                        HorizontalDivider(color = LightOutlineVariant)
+                        NavigationBar(
+                            containerColor = Color.White,
+                            tonalElevation = 0.dp
+                        ) {
+                            HomeTab.entries.forEachIndexed { idx, tab ->
+                                val badgeCount = when (tab) {
+                                    HomeTab.CHATS -> totalUnreadChats
+                                    HomeTab.PROFILE -> pendingFriendRequests
+                                    HomeTab.CALLS -> if (incomingRingingCall != null) 1 else 0
+                                    else -> 0
+                                }
+                                NavigationBarItem(
+                                    selected = selectedTabIndex == idx,
+                                    onClick = { selectedTabIndex = idx },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = SkyDeep,
+                                        selectedTextColor = SkyDeep,
+                                        indicatorColor = SkySoft,
+                                        unselectedIconColor = LightOnSurfaceVariant,
+                                        unselectedTextColor = LightOnSurfaceVariant
+                                    ),
+                                    icon = {
+                                        BadgedBox(
+                                            badge = {
+                                                if (badgeCount > 0) {
+                                                    Badge(containerColor = SkyPrimary, contentColor = Color.White) {
+                                                        Text(badgeCount.toString())
+                                                    }
+                                                }
                                             }
+                                        ) {
+                                            Icon(tab.icon, contentDescription = tab.label)
                                         }
-                                    ) {
-                                        Icon(tab.icon, contentDescription = tab.label)
-                                    }
-                                },
-                                label = { Text(tab.label, maxLines = 1) },
-                                modifier = Modifier.testTag(tab.tag)
-                            )
+                                    },
+                                    label = { Text(tab.label, maxLines = 1) },
+                                    modifier = Modifier.testTag(tab.tag)
+                                )
+                            }
                         }
                     }
                 }
@@ -382,7 +403,10 @@ fun HomeDashboardScreen(
                     .padding(innerPadding)
             ) {
                 if (useRail) {
-                    NavigationRail(modifier = Modifier.fillMaxHeight().statusBarsPadding()) {
+                    NavigationRail(
+                        containerColor = Color.White,
+                        modifier = Modifier.fillMaxHeight().statusBarsPadding()
+                    ) {
                         Spacer(modifier = Modifier.height(12.dp))
                         HomeTab.entries.forEachIndexed { idx, tab ->
                             val badgeCount = when (tab) {
@@ -394,11 +418,20 @@ fun HomeDashboardScreen(
                             NavigationRailItem(
                                 selected = selectedTabIndex == idx,
                                 onClick = { selectedTabIndex = idx },
+                                colors = NavigationRailItemDefaults.colors(
+                                    selectedIconColor = SkyDeep,
+                                    selectedTextColor = SkyDeep,
+                                    indicatorColor = SkySoft,
+                                    unselectedIconColor = LightOnSurfaceVariant,
+                                    unselectedTextColor = LightOnSurfaceVariant
+                                ),
                                 icon = {
                                     BadgedBox(
                                         badge = {
                                             if (badgeCount > 0) {
-                                                Badge { Text(badgeCount.toString()) }
+                                                Badge(containerColor = SkyPrimary, contentColor = Color.White) {
+                                                    Text(badgeCount.toString())
+                                                }
                                             }
                                         }
                                     ) {

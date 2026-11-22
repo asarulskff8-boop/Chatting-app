@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
@@ -46,6 +47,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,6 +59,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -69,7 +72,7 @@ import com.example.ui.components.EmptyStateCard
 import com.example.ui.components.SkeletonConversationList
 import com.example.ui.components.UserAvatar
 import com.example.ui.components.formatRelativeTime
-import androidx.compose.ui.graphics.Color
+import com.example.ui.theme.SkyMist
 import com.example.ui.theme.SkyPrimary
 
 private enum class ChatFilter(val label: String) {
@@ -175,7 +178,7 @@ fun ChatsTab(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Search messages or people...") },
-                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
                         IconButton(onClick = { searchQuery = "" }) {
@@ -185,6 +188,12 @@ fun ChatsTab(
                 },
                 singleLine = true,
                 shape = RoundedCornerShape(18.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = SkyPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -205,8 +214,14 @@ fun ChatsTab(
                         onClick = { selectedFilter = filter },
                         label = { Text(filter.label) },
                         colors = FilterChipDefaults.filterChipColors(
+                            containerColor = Color.White,
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = selectedFilter == filter,
+                            borderColor = MaterialTheme.colorScheme.outline
                         )
                     )
                 }
@@ -280,11 +295,11 @@ fun ChatsTab(
                                 Card(
                                     shape = RoundedCornerShape(20.dp),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (isPinned) {
-                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f)
-                                        } else {
-                                            MaterialTheme.colorScheme.surface
-                                        }
+                                        containerColor = if (isPinned) SkyMist else Color.White
+                                    ),
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = if (isPinned) SkyPrimary.copy(alpha = 0.25f) else MaterialTheme.colorScheme.outline
                                     ),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                                     modifier = Modifier

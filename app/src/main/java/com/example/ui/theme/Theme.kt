@@ -39,8 +39,15 @@ private val LightColorScheme = lightColorScheme(
     onSurface = LightOnSurface,
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnSurfaceVariant,
+    surfaceBright = Color.White,
+    surfaceDim = LightSurfaceVariant,
+    surfaceContainerLowest = Color.White,
+    surfaceContainerLow = Color.White,
+    surfaceContainer = Color(0xFFF6FAFF),
+    surfaceContainerHigh = Color(0xFFEFF6FD),
+    surfaceContainerHighest = Color(0xFFE6F0FA),
     outline = LightOutline,
-    outlineVariant = Color(0xFFF1F5F9),
+    outlineVariant = LightOutlineVariant,
     error = Color(0xFFDC2626),
     onError = Color.White
 )

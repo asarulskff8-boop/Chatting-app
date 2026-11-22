@@ -63,17 +63,20 @@ import androidx.compose.material.icons.rounded.Report
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -340,8 +343,9 @@ fun ChatDetailScreen(
             }
         },
         bottomBar = {
-            Surface(tonalElevation = 4.dp) {
+            Surface(color = Color.White, tonalElevation = 0.dp) {
                 Column(modifier = Modifier.navigationBarsPadding()) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     // Reply / Edit Banner
                     val activeReply = replyTarget
                     val activeEdit = editingMessage
@@ -422,6 +426,12 @@ fun ChatDetailScreen(
                             placeholder = { Text(if (isRecordingAudio) "Recording voice note..." else "Message...") },
                             maxLines = 4,
                             shape = RoundedCornerShape(24.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                focusedBorderColor = SkyPrimary,
+                                unfocusedBorderColor = Color.Transparent
+                            ),
                             modifier = Modifier.weight(1f).testTag("message_input")
                         )
                         Spacer(modifier = Modifier.width(6.dp))
@@ -788,7 +798,9 @@ private fun MessageBubble(
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = alignment) {
         Surface(
             shape = bubbleShape,
-            color = if (isMine) SkyPrimary else MaterialTheme.colorScheme.surfaceVariant,
+            color = if (isMine) SkyPrimary else Color.White,
+            border = if (isMine) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            shadowElevation = if (isMine) 1.dp else 0.5.dp,
             modifier = Modifier
                 .widthIn(max = 310.dp)
                 .combinedClickable(onClick = {}, onLongClick = onLongPress)

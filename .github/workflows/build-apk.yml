@@ -25,19 +25,14 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Install Android SDK packages & accept licenses
+      - name: Accept SDK licenses
         run: |
           SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
           echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
           mkdir -p "$SDK_ROOT/licenses"
-          
-          # Accept all SDK licenses automatically
           yes | sdkmanager --licenses || true
-          
-          # Install required SDK tools and platforms
-          sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34" || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" || true
+          sdkmanager "platform-tools" || true
 
       - name: Prepare debug keystore and env
         run: |

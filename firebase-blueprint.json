@@ -1,0 +1,390 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Public user profile for discovery, QR cards, and presence",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "username": { "type": "string", "description": "Unique handle" },
+        "displayName": { "type": "string", "description": "Full display name" },
+        "bio": { "type": "string", "description": "Short user bio" },
+        "statusText": { "type": "string", "description": "Profile status text" },
+        "photoUrl": { "type": "string", "description": "Profile photo URL or media ref" },
+        "avatarMediaId": { "type": "string", "description": "Uploaded avatar media ID" },
+        "publicCode": { "type": "string", "description": "Shareable short user ID code" },
+        "online": { "type": "boolean", "description": "Online presence indicator" },
+        "profileCompleted": { "type": "boolean", "description": "Whether onboarding setup completed" },
+        "discoverable": { "type": "boolean", "description": "Whether user appears in friend discovery" },
+        "lastSeenAt": { "type": "string", "format": "date-time", "description": "Server timestamp of last activity" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp on creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp on update" }
+      },
+      "required": ["userId", "username", "displayName", "online", "profileCompleted", "discoverable", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Owner-only PII and privacy/security settings",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner Firebase Auth UID" },
+        "email": { "type": "string", "description": "Verified account email" },
+        "phoneNumber": { "type": "string", "description": "Phone number" },
+        "phoneVerified": { "type": "boolean", "description": "Phone OTP verification flag" },
+        "biometricEnabled": { "type": "boolean", "description": "Biometric lock toggle" },
+        "privacyLastSeen": { "type": "string", "enum": ["everyone", "contacts", "nobody"] },
+        "privacyProfilePhoto": { "type": "string", "enum": ["everyone", "contacts", "nobody"] },
+        "readReceiptsEnabled": { "type": "boolean" },
+        "notificationsEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email", "phoneVerified", "biometricEnabled", "privacyLastSeen", "privacyProfilePhoto", "readReceiptsEnabled", "notificationsEnabled", "createdAt", "updatedAt"]
+    },
+    "Contact": {
+      "title": "Contact",
+      "description": "User's saved contact entry",
+      "type": "object",
+      "properties": {
+        "contactUid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "username": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "avatarMediaId": { "type": "string" },
+        "publicCode": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["contactUid", "displayName", "username", "createdAt", "updatedAt"]
+    },
+    "BlockedUser": {
+      "title": "BlockedUser",
+      "description": "Blocked user record",
+      "type": "object",
+      "properties": {
+        "blockedUid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["blockedUid", "displayName", "createdAt"]
+    },
+    "FriendRequest": {
+      "title": "FriendRequest",
+      "description": "QR or directory friend connection request",
+      "type": "object",
+      "properties": {
+        "fromUid": { "type": "string" },
+        "toUid": { "type": "string" },
+        "fromName": { "type": "string" },
+        "fromUsername": { "type": "string" },
+        "fromPhotoUrl": { "type": "string" },
+        "toName": { "type": "string" },
+        "toUsername": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"] },
+        "participantUids": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fromUid", "toUid", "fromName", "fromUsername", "toName", "toUsername", "status", "participantUids", "createdAt", "updatedAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "1-on-1 direct message or group chat metadata",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["direct", "group"] },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "communityId": { "type": "string" },
+        "inviteCode": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "memberUids": { "type": "array" },
+        "adminUids": { "type": "array" },
+        "pinnedByUids": { "type": "array" },
+        "archivedByUids": { "type": "array" },
+        "mutedByUids": { "type": "array" },
+        "typingUids": { "type": "array" },
+        "unreadCounts": { "type": "object" },
+        "lastMessageText": { "type": "string" },
+        "lastMessageType": { "type": "string" },
+        "lastMessageSenderId": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" },
+        "pinnedMessageId": { "type": "string" },
+        "pinnedMessageText": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "title", "createdBy", "memberUids", "adminUids", "pinnedByUids", "archivedByUids", "mutedByUids", "typingUids", "unreadCounts", "lastMessageText", "lastMessageType", "lastMessageSenderId", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Real-time chat message",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderPhotoUrl": { "type": "string" },
+        "memberUids": { "type": "array" },
+        "type": { "type": "string", "enum": ["text", "image", "video", "audio", "file", "contact", "location", "sticker", "system"] },
+        "text": { "type": "string" },
+        "mediaId": { "type": "string" },
+        "mediaName": { "type": "string" },
+        "mediaMimeType": { "type": "string" },
+        "mediaSizeBytes": { "type": "integer" },
+        "audioDurationSec": { "type": "integer" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "locationLabel": { "type": "string" },
+        "sharedContactName": { "type": "string" },
+        "sharedContactPhone": { "type": "string" },
+        "replyToMessageId": { "type": "string" },
+        "replyToSenderName": { "type": "string" },
+        "replyToText": { "type": "string" },
+        "forwardedFrom": { "type": "string" },
+        "reactions": { "type": "object" },
+        "readByUids": { "type": "array" },
+        "starredByUids": { "type": "array" },
+        "edited": { "type": "boolean" },
+        "deleted": { "type": "boolean" },
+        "pinned": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["conversationId", "senderId", "senderName", "memberUids", "type", "text", "reactions", "readByUids", "starredByUids", "edited", "deleted", "pinned", "createdAt", "updatedAt"]
+    },
+    "MediaFile": {
+      "title": "MediaFile",
+      "description": "Compressed image/audio payload stored for real-time cross-device media sharing",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string" },
+        "memberUids": { "type": "array" },
+        "publicReadable": { "type": "boolean" },
+        "mimeType": { "type": "string" },
+        "fileName": { "type": "string" },
+        "sizeBytes": { "type": "integer" },
+        "base64Data": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "memberUids", "publicReadable", "mimeType", "fileName", "sizeBytes", "base64Data", "createdAt"]
+    },
+    "Story": {
+      "title": "Story",
+      "description": "24-hour status update / story",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorUsername": { "type": "string" },
+        "authorPhotoUrl": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image", "video"] },
+        "caption": { "type": "string" },
+        "backgroundColorHex": { "type": "string" },
+        "mediaId": { "type": "string" },
+        "visibility": { "type": "string", "enum": ["everyone", "contacts"] },
+        "visibleToUids": { "type": "array" },
+        "viewerUids": { "type": "array" },
+        "reactions": { "type": "object" },
+        "expiresAtMs": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "authorUsername", "type", "caption", "backgroundColorHex", "visibility", "visibleToUids", "viewerUids", "reactions", "expiresAtMs", "createdAt", "updatedAt"]
+    },
+    "Channel": {
+      "title": "Channel",
+      "description": "Broadcast channel",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "adminUids": { "type": "array" },
+        "subscriberUids": { "type": "array" },
+        "subscriberCount": { "type": "integer" },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "inviteCode": { "type": "string" },
+        "commentsEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "description", "ownerId", "adminUids", "subscriberUids", "subscriberCount", "visibility", "inviteCode", "commentsEnabled", "createdAt", "updatedAt"]
+    },
+    "ChannelPost": {
+      "title": "ChannelPost",
+      "description": "Broadcast message in a channel",
+      "type": "object",
+      "properties": {
+        "channelId": { "type": "string" },
+        "channelOwnerId": { "type": "string" },
+        "channelVisibility": { "type": "string" },
+        "subscriberUids": { "type": "array" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "text": { "type": "string" },
+        "mediaId": { "type": "string" },
+        "mediaName": { "type": "string" },
+        "mediaMimeType": { "type": "string" },
+        "reactions": { "type": "object" },
+        "commentCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["channelId", "channelOwnerId", "channelVisibility", "subscriberUids", "authorId", "authorName", "text", "reactions", "commentCount", "createdAt", "updatedAt"]
+    },
+    "Community": {
+      "title": "Community",
+      "description": "Community organizing multiple related groups",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "adminUids": { "type": "array" },
+        "memberUids": { "type": "array" },
+        "groupIds": { "type": "array" },
+        "announcementText": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "description", "ownerId", "adminUids", "memberUids", "groupIds", "announcementText", "createdAt", "updatedAt"]
+    },
+    "CallSession": {
+      "title": "CallSession",
+      "description": "Voice or video call signaling session and call history",
+      "type": "object",
+      "properties": {
+        "callerId": { "type": "string" },
+        "callerName": { "type": "string" },
+        "callerPhotoUrl": { "type": "string" },
+        "calleeId": { "type": "string" },
+        "calleeName": { "type": "string" },
+        "calleePhotoUrl": { "type": "string" },
+        "participantUids": { "type": "array" },
+        "callType": { "type": "string", "enum": ["audio", "video"] },
+        "status": { "type": "string", "enum": ["ringing", "connected", "ended", "declined", "missed"] },
+        "sdpOffer": { "type": "string" },
+        "sdpAnswer": { "type": "string" },
+        "durationSeconds": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["callerId", "callerName", "calleeId", "calleeName", "participantUids", "callType", "status", "durationSeconds", "createdAt", "updatedAt"]
+    },
+    "CallCandidate": {
+      "title": "CallCandidate",
+      "description": "WebRTC ICE signaling candidate",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "participantUids": { "type": "array" },
+        "sdpMid": { "type": "string" },
+        "sdpMLineIndex": { "type": "integer" },
+        "candidate": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "participantUids", "sdpMid", "sdpMLineIndex", "candidate", "createdAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "User notification record",
+      "type": "object",
+      "properties": {
+        "recipientId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "type": { "type": "string", "enum": ["message", "call", "missed_call", "group_invite", "friend_request", "story_reaction", "channel_update", "mention"] },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "targetId": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recipientId", "senderId", "senderName", "type", "title", "body", "read", "createdAt"]
+    },
+    "UserReport": {
+      "title": "UserReport",
+      "description": "Abuse report submitted by a user",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string" },
+        "reportedUserId": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterId", "reportedUserId", "reason", "details", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Public profile for user discovery and chat headers"
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivateInfo" },
+      "description": "Owner-only PII and privacy settings"
+    },
+    "/users/{userId}/contacts/{contactId}": {
+      "schema": { "$ref": "#/entities/Contact" },
+      "description": "Owner-only accepted contacts"
+    },
+    "/users/{userId}/blocked/{blockedUid}": {
+      "schema": { "$ref": "#/entities/BlockedUser" },
+      "description": "Owner-only blocked users"
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/AppNotification" },
+      "description": "User notification inbox"
+    },
+    "/friend_requests/{requestId}": {
+      "schema": { "$ref": "#/entities/FriendRequest" },
+      "description": "Friend connection requests"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "1-on-1 private chats and group chats"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Real-time messages within a conversation"
+    },
+    "/media_files/{mediaId}": {
+      "schema": { "$ref": "#/entities/MediaFile" },
+      "description": "Shared compressed media and voice note payloads"
+    },
+    "/stories/{storyId}": {
+      "schema": { "$ref": "#/entities/Story" },
+      "description": "24-hour user stories and status updates"
+    },
+    "/channels/{channelId}": {
+      "schema": { "$ref": "#/entities/Channel" },
+      "description": "Public and private broadcast channels"
+    },
+    "/channels/{channelId}/posts/{postId}": {
+      "schema": { "$ref": "#/entities/ChannelPost" },
+      "description": "Posts inside a broadcast channel"
+    },
+    "/communities/{communityId}": {
+      "schema": { "$ref": "#/entities/Community" },
+      "description": "Communities organizing multiple related groups"
+    },
+    "/calls/{callId}": {
+      "schema": { "$ref": "#/entities/CallSession" },
+      "description": "Voice and video call signaling and history"
+    },
+    "/calls/{callId}/candidates/{candidateId}": {
+      "schema": { "$ref": "#/entities/CallCandidate" },
+      "description": "WebRTC ICE candidates for call signaling"
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/UserReport" },
+      "description": "User abuse reports"
+    }
+  }
+}

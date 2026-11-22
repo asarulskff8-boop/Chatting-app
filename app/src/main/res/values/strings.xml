@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Chatting App</string>
+    <string name="app_tagline">Connect Beyond Messages.</string>
+    <string name="login_greeting">Hello again.</string>
+    <string name="login_subtitle">Pick up right where you left off.</string>
+    <string name="need_help">Need help?</string>
+    <string name="slide_to_sign_in">Slide to sign in</string>
+    <string name="keep_me_signed_in">Keep me signed in</string>
+    <string name="forgot_prompt">Forgot?</string>
+    <string name="create_account">Create account</string>
+    <string name="account_ready_title">Your Account Is Ready!</string>
+</resources>

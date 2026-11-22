@@ -1,0 +1,6 @@
+{
+  "name": "Chatting App",
+  "description": "Next-generation real-time Android messaging, voice & video calling, stories, groups, channels, and QR friend discovery platform. Connect Beyond Messages.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
